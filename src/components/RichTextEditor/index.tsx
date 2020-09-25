@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-//import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic';
 import SunEditor from 'suneditor-react';
+import dompurify from 'dompurify';
 
 import 'suneditor/dist/css/suneditor.min.css';
 
@@ -8,9 +9,17 @@ import sunEditorLangPtBr from '../../utils/sunEditorLangPtBr';
 
 import { Container } from './styles';
 
-export default function RichTextEditor() {
+function RichTextEditor() {
 
     const [getValue, setValue] = useState('');
+
+    function onEditorChange(value: string){
+
+        setValue(dompurify.sanitize(value, { 
+            ADD_TAGS: ["iframe"], 
+            ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] 
+        }) )
+    }
 
     return (
         <Container>
@@ -24,10 +33,9 @@ export default function RichTextEditor() {
                     min-height: 500px;
                 `}
                 placeholder='Escreva aqui'
-                onChange={setValue}
+                onChange={onEditorChange}
                 setOptions={{
                     imageWidth: '100%',
-                    /*paragraphStyles: [],*/
                     imageFileInput: false,
                     formats: ['h1', 'h2', 'p'],
                     buttonList: [
@@ -38,7 +46,7 @@ export default function RichTextEditor() {
                     ],
                 }}
             />
-
+                
             <div 
                 className='html-text'
                 dangerouslySetInnerHTML={{ __html: getValue }} 
@@ -48,4 +56,4 @@ export default function RichTextEditor() {
     );
 }
 
-//export default dynamic(Promise.resolve(RichTextEditor), { ssr: false });
+export default dynamic(Promise.resolve(RichTextEditor), { ssr: false });

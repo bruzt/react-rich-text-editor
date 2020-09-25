@@ -15,5 +15,9 @@ export const Container = styled.div`
             height: 450px !important;
             padding-bottom: 0 !important;
         }
+
+        a, a:visited {
+            color: inherit;
+        }
     }
 `;
